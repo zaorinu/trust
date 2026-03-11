@@ -91,3 +91,31 @@ and halts further execution, preventing the user from interacting with
 the framed content.  Useful as a simple anti-clickjacking measure.
 
 Load it like any other plugin; it will log a warning when activated.
+
+---
+
+## (security-logger.js) Client-side security logging
+Tracks runtime errors, unhandled promise rejections, console warnings/
+errors and network failures, then sends them to a configurable endpoint
+or stores them in `localStorage` for later inspection.  Helps satisfy
+OWASP A09-style monitoring requirements by capturing security events
+as the page executes.
+
+Configuration attributes on the engine script:
+
+- `data-trust-log-url` – URL to POST log entries to
+- `data-trust-log-local="1"` – also persist logs locally in
+  `localStorage`.
+
+---
+
+## (csp-helper.js) CSP & iframe sandbox helper
+Ensures a Content Security Policy is present (injects a `<meta>` tag if
+none exists) and warns about any `<iframe>` without a `sandbox`
+attribute.  You can supply a custom policy via
+`data-trust-csp`; setting `data-trust-csp-enforce="1"` will also add
+random nonces to all `<script>` tags to help enforce the policy.
+
+This plugin encourages use of standard browser security controls.  It
+plays nicely with other plugins and does no harm if a policy is already
+provided.

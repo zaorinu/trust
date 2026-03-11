@@ -14,6 +14,25 @@
 
     Trust.plugin('frame-guard', Trust => {
         if (window.top !== window.self) {
+            // attempt to destroy the iframe from the parent (same-origin only)
+            try {
+                const iframes = window.parent.document.getElementsByTagName('iframe');
+                for (let i = 0; i < iframes.length; i++) {
+                    if (iframes[i].contentWindow === window) {
+                        const parent = iframes[i].parentNode;
+                        if (iframes[i].remove) {
+                            iframes[i].remove();
+                        } else if (parent && parent.removeChild) {
+                            parent.removeChild(iframes[i]);
+                        }
+                        Trust.log('frame-guard destroyed parent iframe', 'warn');
+                        return;
+                    }
+                }
+            } catch (e) {
+                // cross-origin; fall through to blocking the child page
+            }
+
             // replace everything with a simple static page and halt all activity
             const message = `
                 <p>This website doesn't accept being loaded from an iframe.</p>
