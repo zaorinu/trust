@@ -1,11 +1,31 @@
 # List of plugins
 
+_All plugins depend on the core engine (`index.js`)._ They should
+register themselves via **`Trust.plugin(name, initFn)`** and use
+`Trust.log` for output; that keeps a uniform appearance and allows
+Trust to catch initialization errors.
+
+Plugins may also be protected with SRI hashes by setting
+`data-trust-integrity` on the loader script; if a hash is omitted, the
+engine will still fetch the file but will issue a warning (especially
+on `localhost`).
+
+
 ## (pwdleak.js) Password leaking protection
-This plugin uses attribute types to know if an 'password' field has been modified by the user to a 'text' field, that would expose the password to any user viewing the screen.
+This plugin requires the core TrustJS engine to be loaded first; it
+attaches to `window.Trust` and uses the shared `Trust.log` helper so all
+output uses the same styling as the engine itself.
 
-By using this plugin, you need to attribute an id to your password fields, and, if you want the password being visible, insert `data-trust-toggle="pass"` into your button, so pwdleak.js will let the user view the typed characters for 5 seconds.
+It watches for attempts to change an `<input type="password">` to a
+non-password type and automatically reverts the field (clearing its
+value for safety).
 
-Example code snippet:
+Usage is straightforward: give your password field an `id`, and add
+`data-trust-toggle="pass"` to the control that should temporarily show
+its contents.  On activation you’ll see a console message like
+`Trust: Password protection plugin enabled`.
+
+Example:
 ```html
 <div>
     <input type="password" id="pass">
@@ -23,11 +43,15 @@ Example code snippet:
 ---
 
 ## (selfdefender.js) Self‑defending runtime
-Watches for tampering of the Trust engine or any element marked with
-`data-trust-protect`.  On any unauthorized attribute change, node removal
-or insertion it will trigger the engine kill‑switch and stop further
-execution.  Useful to harden pages against DOM‑injection or extension
-modification attacks.
+This plugin needs TrustJS itself – it hooks `window.Trust` and uses the
+same `Trust.log` formatting.  If the engine isn't present the plugin
+aborts silently.
+
+It watches for tampering of the engine `<script>` tag or any element
+marked with `data-trust-protect`.  On unauthorized attribute changes or
+node additions/removals it triggers the engine kill‑switch, clearing the
+page and halting execution.  It's a lightweight guard against
+DOM‑injection, rogue extensions, or other runtime interference.
 
 Usage is as simple as adding `/plugins/selfdefender.js` to your
 `data-trust-load` list; you can optionally annotate other critical
@@ -36,7 +60,10 @@ nodes (`<div data-trust-protect>…</div>`) to have them monitored as well.
 ---
 
 ## (idle-logout.js) Automatic idle timer
-Tracks user activity (mouse/keyboard/scroll/touch) and fires after a
+Depends on the TrustJS engine and uses `Trust.log` for its console
+messages.
+
+It tracks user activity (mouse/keyboard/scroll/touch) and fires after a
 period of inactivity.  Configure the duration in seconds with
 `data-trust-idle` on the engine `<script>`, and optionally supply
 a global function name via `data-trust-idle-callback` to run when the
