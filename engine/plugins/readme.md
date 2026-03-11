@@ -71,3 +71,23 @@ timer elapses.  Defaults to reloading the page after 300 s.
 
 Great for client‑side apps that need to clear sensitive state or
 redirect users when they've walked away.
+
+---
+
+## (input-sanitizer.js) Input sanitizer
+A lightweight sanitizer that watches all `<input>` and `<textarea>`
+fields and strips out HTML tags, scripts, and event handler
+attributes from their values.  It’s designed to catch accidental or
+malicious pasted content and log any sanitization activity.
+
+Register the plugin via `data-trust-load="/plugins/input-sanitizer.js"`.
+
+---
+
+## (frame-guard.js) Clickjacking/frame protection
+Detects if the page is running inside an iframe (`window.top !==
+window.self`).  If so it replaces the document with a warning message
+and halts further execution, preventing the user from interacting with
+the framed content.  Useful as a simple anti-clickjacking measure.
+
+Load it like any other plugin; it will log a warning when activated.
