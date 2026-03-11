@@ -19,3 +19,16 @@ Example code snippet:
     data-trust-integrity="sha384-reported-sha-from-trust">
 </script>
 ```
+
+---
+
+## (selfdefender.js) Self‑defending runtime
+Watches for tampering of the Trust engine or any element marked with
+`data-trust-protect`.  On any unauthorized attribute change, node removal
+or insertion it will trigger the engine kill‑switch and stop further
+execution.  Useful to harden pages against DOM‑injection or extension
+modification attacks.
+
+Usage is as simple as adding `/plugins/selfdefender.js` to your
+`data-trust-load` list; you can optionally annotate other critical
+nodes (`<div data-trust-protect>…</div>`) to have them monitored as well.
