@@ -32,3 +32,15 @@ modification attacks.
 Usage is as simple as adding `/plugins/selfdefender.js` to your
 `data-trust-load` list; you can optionally annotate other critical
 nodes (`<div data-trust-protect>…</div>`) to have them monitored as well.
+
+---
+
+## (idle-logout.js) Automatic idle timer
+Tracks user activity (mouse/keyboard/scroll/touch) and fires after a
+period of inactivity.  Configure the duration in seconds with
+`data-trust-idle` on the engine `<script>`, and optionally supply
+a global function name via `data-trust-idle-callback` to run when the
+timer elapses.  Defaults to reloading the page after 300 s.
+
+Great for client‑side apps that need to clear sensitive state or
+redirect users when they've walked away.
